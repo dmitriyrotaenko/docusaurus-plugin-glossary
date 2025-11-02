@@ -10,6 +10,7 @@ module.exports = {
     '^@docusaurus/(.*)$': '<rootDir>/jest/mocks/$1',
     '\\.module\\.css$': 'identity-obj-proxy',
     '\\.css$': require.resolve('./jest/cssMapper.js'),
+    '^unist-util-visit$': '<rootDir>/jest/mocks/unist-util-visit.js',
   },
   testMatch: ['**/__tests__/**/*.js', '**/*.test.js'],
   collectCoverageFrom: ['components/**/*.js', 'theme/**/*.js', 'index.js', '!**/node_modules/**'],
