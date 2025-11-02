@@ -1,4 +1,4 @@
-# Docusaurus Glossary Plugin
+# docusaurus-plugin-glossary
 
 A comprehensive Docusaurus plugin that provides glossary functionality with an auto-generated glossary page, searchable terms, and inline term tooltips.
 
@@ -17,6 +17,7 @@ A comprehensive Docusaurus plugin that provides glossary functionality with an a
 ### For Local Use (Same Repository)
 
 1. Copy the plugin directory to your Docusaurus site:
+
    ```
    src/plugins/docusaurus-plugin-glossary/
    ```
@@ -29,9 +30,9 @@ A comprehensive Docusaurus plugin that provides glossary functionality with an a
        {
          glossaryPath: 'glossary/glossary.json', // optional, default: 'glossary/glossary.json'
          routePath: '/glossary', // optional, default: '/glossary'
-       }
-     ]
-   ]
+       },
+     ],
+   ];
    ```
 
 ### For Separate Package (To Publish)
@@ -39,12 +40,14 @@ A comprehensive Docusaurus plugin that provides glossary functionality with an a
 To publish this as a separate npm package:
 
 1. Create a new directory for the package:
+
    ```bash
    mkdir docusaurus-plugin-glossary
    cd docusaurus-plugin-glossary
    ```
 
 2. Copy the plugin files:
+
    ```
    docusaurus-plugin-glossary/
    ├── index.js
@@ -60,6 +63,7 @@ To publish this as a separate npm package:
    ```
 
 3. Create a `package.json`:
+
    ```json
    {
      "name": "docusaurus-plugin-glossary",
@@ -79,11 +83,13 @@ To publish this as a separate npm package:
    ```
 
 4. Publish to npm:
+
    ```bash
    npm publish
    ```
 
 5. Install in your Docusaurus site:
+
    ```bash
    npm install docusaurus-plugin-glossary
    ```
@@ -96,9 +102,9 @@ To publish this as a separate npm package:
        {
          glossaryPath: 'glossary/glossary.json',
          routePath: '/glossary',
-       }
-     ]
-   ]
+       },
+     ],
+   ];
    ```
 
 ## Usage
@@ -151,6 +157,7 @@ We use <GlossaryTerm term="REST" definition="Representational State Transfer" />
 ```
 
 The component features:
+
 - Dotted underline styling
 - Tooltip showing definition on hover
 - Link to full glossary page entry
@@ -161,6 +168,7 @@ The component features:
 The glossary page is automatically available at `/glossary` (or your configured `routePath`).
 
 Features:
+
 - Alphabetical grouping with letter navigation
 - Real-time search
 - Related terms linking
@@ -169,10 +177,10 @@ Features:
 
 ## Configuration Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
+| Option         | Type   | Default                    | Description                                           |
+| -------------- | ------ | -------------------------- | ----------------------------------------------------- |
 | `glossaryPath` | string | `'glossary/glossary.json'` | Path to glossary JSON file relative to site directory |
-| `routePath` | string | `'/glossary'` | URL path for glossary page |
+| `routePath`    | string | `'/glossary'`              | URL path for glossary page                            |
 
 ## Customization
 

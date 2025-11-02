@@ -9,7 +9,7 @@ import styles from './GlossaryPage.module.css';
 function groupTermsByLetter(terms) {
   const grouped = {};
 
-  terms.forEach((term) => {
+  terms.forEach(term => {
     const firstLetter = term.term.charAt(0).toUpperCase();
     if (!grouped[firstLetter]) {
       grouped[firstLetter] = [];
@@ -18,7 +18,7 @@ function groupTermsByLetter(terms) {
   });
 
   // Sort each group alphabetically
-  Object.keys(grouped).forEach((letter) => {
+  Object.keys(grouped).forEach(letter => {
     grouped[letter].sort((a, b) => a.term.localeCompare(b.term));
   });
 
@@ -40,7 +40,7 @@ export default function GlossaryPage({ glossaryData }) {
 
     const lowerSearch = searchTerm.toLowerCase();
     return terms.filter(
-      (term) =>
+      term =>
         term.term.toLowerCase().includes(lowerSearch) ||
         term.definition.toLowerCase().includes(lowerSearch)
     );
@@ -54,10 +54,7 @@ export default function GlossaryPage({ glossaryData }) {
   const letters = Object.keys(groupedTerms).sort();
 
   return (
-    <Layout
-      title="Glossary"
-      description="A glossary of terms and definitions"
-    >
+    <Layout title="Glossary" description="A glossary of terms and definitions">
       <div className={styles.glossaryContainer}>
         <header className={styles.glossaryHeader}>
           <h1>Glossary</h1>
@@ -71,7 +68,7 @@ export default function GlossaryPage({ glossaryData }) {
               placeholder="Search terms..."
               className={styles.searchInput}
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={e => setSearchTerm(e.target.value)}
             />
           </div>
         </header>
@@ -84,7 +81,7 @@ export default function GlossaryPage({ glossaryData }) {
           <div className={styles.glossaryContent}>
             {/* Letter navigation */}
             <nav className={styles.letterNav}>
-              {letters.map((letter) => (
+              {letters.map(letter => (
                 <a key={letter} href={`#letter-${letter}`} className={styles.letterLink}>
                   {letter}
                 </a>
@@ -92,12 +89,16 @@ export default function GlossaryPage({ glossaryData }) {
             </nav>
 
             {/* Terms grouped by letter */}
-            {letters.map((letter) => (
+            {letters.map(letter => (
               <section key={letter} id={`letter-${letter}`} className={styles.letterSection}>
                 <h2 className={styles.letterHeading}>{letter}</h2>
                 <dl className={styles.termList}>
                   {groupedTerms[letter].map((term, index) => (
-                    <div key={`${letter}-${index}`} className={styles.termItem} id={term.id || term.term.toLowerCase().replace(/\s+/g, '-')}>
+                    <div
+                      key={`${letter}-${index}`}
+                      className={styles.termItem}
+                      id={term.id || term.term.toLowerCase().replace(/\s+/g, '-')}
+                    >
                       <dt className={styles.termName}>
                         {term.term}
                         {term.abbreviation && (

@@ -17,10 +17,7 @@ const fs = require('fs-extra');
  * @returns {object} Plugin object
  */
 function glossaryPlugin(context, options = {}) {
-  const {
-    glossaryPath = 'glossary/glossary.json',
-    routePath = '/glossary',
-  } = options;
+  const { glossaryPath = 'glossary/glossary.json', routePath = '/glossary' } = options;
 
   return {
     name: 'docusaurus-plugin-glossary',
@@ -42,10 +39,7 @@ function glossaryPlugin(context, options = {}) {
       const { createData, addRoute } = actions;
 
       // Create data file that can be imported by components
-      const glossaryDataPath = await createData(
-        'glossary-data.json',
-        JSON.stringify(content)
-      );
+      const glossaryDataPath = await createData('glossary-data.json', JSON.stringify(content));
 
       // Add glossary page route
       addRoute({

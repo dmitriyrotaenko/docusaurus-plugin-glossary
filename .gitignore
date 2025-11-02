@@ -17,6 +17,9 @@ lib/
 coverage/
 .nyc_output/
 
+# Jest
+.jest-cache/
+
 # Environment variables
 .env
 .env.local
