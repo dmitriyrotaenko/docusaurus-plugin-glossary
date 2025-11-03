@@ -33,10 +33,11 @@
   white-space: normal;
   max-width: 300px;
   min-width: 200px;
-  z-index: 1000;
+  z-index: 9999;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s;
+  visibility: hidden;
 }
 
 .tooltip::after {
@@ -63,6 +64,7 @@
 .tooltipVisible {
   opacity: 1;
   pointer-events: auto;
+  visibility: visible;
 }
 
 .tooltip strong {
