@@ -11,9 +11,17 @@
           "mainDocId": "intro",
           "docs": [
             {
+              "id": "auto-link",
+              "path": "/docs/auto-link"
+            },
+            {
               "id": "intro",
               "path": "/docs/intro",
               "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "manual-link",
+              "path": "/docs/manual-link"
             }
           ],
           "draftIds": [],

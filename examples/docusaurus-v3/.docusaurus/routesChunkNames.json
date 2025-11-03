@@ -1,76 +1,41 @@
 {
-  "/__docusaurus/debug-5ff": {
-    "__comp": "__comp---theme-debug-config-23-a-2ff",
+  "/glossary-24e": {
+    "__comp": "56766d17",
     "__context": {
-      "plugin": "plugin---docusaurus-debugb-38-ad3"
-    }
-  },
-  "/__docusaurus/debug/config-5ba": {
-    "__comp": "__comp---theme-debug-config-23-a-2ff",
-    "__context": {
-      "plugin": "plugin---docusaurus-debugb-38-ad3"
-    }
-  },
-  "/__docusaurus/debug/content-a2b": {
-    "__comp": "__comp---theme-debug-contentba-8-ce7",
-    "__context": {
-      "plugin": "plugin---docusaurus-debugb-38-ad3"
+      "plugin": "8630788e"
     },
-    "__props": "__props---docusaurus-debug-content-3-c-0-be2"
+    "glossaryData": "2230905b"
   },
-  "/__docusaurus/debug/globalData-c3c": {
-    "__comp": "__comp---theme-debug-global-dataede-0fa",
+  "/docs-776": {
+    "__comp": "5e95c892",
     "__context": {
-      "plugin": "plugin---docusaurus-debugb-38-ad3"
+      "plugin": "aba21aa0"
     }
   },
-  "/__docusaurus/debug/metadata-156": {
-    "__comp": "__comp---theme-debug-site-metadata-68-e-3d4",
-    "__context": {
-      "plugin": "plugin---docusaurus-debugb-38-ad3"
-    }
+  "/docs-f74": {
+    "__comp": "a7bd4aaa",
+    "__props": "0058b4c6"
   },
-  "/__docusaurus/debug/registry-88c": {
-    "__comp": "__comp---theme-debug-registry-679-501",
-    "__context": {
-      "plugin": "plugin---docusaurus-debugb-38-ad3"
-    }
+  "/docs-221": {
+    "__comp": "a94703ab"
   },
-  "/__docusaurus/debug/routes-000": {
-    "__comp": "__comp---theme-debug-routes-946-699",
-    "__context": {
-      "plugin": "plugin---docusaurus-debugb-38-ad3"
-    }
-  },
-  "/glossary-965": {
-    "__comp": "__comp---users-mcclowes-development-mcclowes-docusaurus-plugin-glossary-components-glossary-page-js-32-e-6e6",
-    "__context": {
-      "plugin": "plugin---glossary-863-492"
-    },
-    "glossaryData": "glossaryData---glossary-223-5f9"
-  },
-  "/docs-393": {
-    "__comp": "__comp---theme-docs-root-5-e-9-0b6",
-    "__context": {
-      "plugin": "plugin---docsaba-d7c"
-    }
-  },
-  "/docs-97a": {
-    "__comp": "__comp---theme-doc-version-roota-7-b-5de",
-    "__props": "__props---docs-005-788"
-  },
-  "/docs-7fc": {
-    "__comp": "__comp---theme-doc-roota-94-67a"
+  "/docs/auto-link-cdb": {
+    "__comp": "17896441",
+    "content": "9d3dc7d2"
   },
   "/docs/intro-61d": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-intro-0-e-3-be1"
+    "__comp": "17896441",
+    "content": "0e384e19"
+  },
+  "/docs/manual-link-476": {
+    "__comp": "17896441",
+    "content": "2cb2b8ec"
   },
   "/-fd5": {
-    "__comp": "__comp---theme-mdx-page-1-f-3-b90",
+    "__comp": "1f391b9e",
     "__context": {
-      "plugin": "plugin---a-74-9d6"
+      "plugin": "a7456010"
     },
-    "content": "content---e-7-c-0a5"
+    "content": "e7ce6630"
   }
 }

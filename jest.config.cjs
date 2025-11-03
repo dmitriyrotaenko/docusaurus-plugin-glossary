@@ -6,12 +6,12 @@ module.exports = {
   },
   moduleNameMapper: {
     '^@theme/Layout$': '<rootDir>/jest/mocks/Layout',
-    '^@theme/(.*)$': '<rootDir>/theme/$1',
+    '^@theme/(.*)$': '<rootDir>/src/theme/$1',
     '^@docusaurus/(.*)$': '<rootDir>/jest/mocks/$1',
     '\\.module\\.css$': 'identity-obj-proxy',
     '\\.css$': require.resolve('./jest/cssMapper.js'),
     '^unist-util-visit$': '<rootDir>/jest/mocks/unist-util-visit.js',
   },
   testMatch: ['**/__tests__/**/*.js', '**/*.test.js'],
-  collectCoverageFrom: ['components/**/*.js', 'theme/**/*.js', 'index.js', '!**/node_modules/**'],
+  collectCoverageFrom: ['src/components/**/*.js', 'src/theme/**/*.js', 'src/index.js', '!**/node_modules/**'],
 };

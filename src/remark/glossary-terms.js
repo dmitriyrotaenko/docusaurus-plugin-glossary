@@ -1,8 +1,6 @@
-// Support both CJS and ESM exports of unist-util-visit
-let visit = require('unist-util-visit');
-visit = visit && visit.visit ? visit.visit : visit;
-const path = require('path');
-const fs = require('fs');
+import { visit } from 'unist-util-visit';
+import path from 'path';
+import fs from 'fs';
 
 /**
  * Creates a remark plugin that automatically detects and replaces glossary terms in markdown
@@ -14,7 +12,7 @@ const fs = require('fs');
  * @param {string} options.siteDir - Docusaurus site directory (required if using glossaryPath)
  * @returns {function} Remark plugin function
  */
-function remarkGlossaryTerms({
+export default function remarkGlossaryTerms({
   terms = [],
   glossaryPath = null,
   routePath = '/glossary',
@@ -79,10 +77,8 @@ function remarkGlossaryTerms({
         // Check if it's a whole word match, with simple plural tolerance ('s' or 'es')
         const beforeChar = index > 0 ? textLower[index - 1] : ' ';
         const afterIndex = index + lowerTerm.length;
-        const afterChar = afterIndex < textLower.length 
-          ? textLower[afterIndex] 
-          : ' ';
-        
+        const afterChar = afterIndex < textLower.length ? textLower[afterIndex] : ' ';
+
         let matchLength = term.length;
         let isWordBoundary = !/\w/.test(beforeChar) && !/\w/.test(afterChar);
 
@@ -96,7 +92,12 @@ function remarkGlossaryTerms({
         }
 
         // Allow trailing 'es' plural (e.g., API -> APIs, box -> boxes)
-        if (!isWordBoundary && afterChar === 'e' && afterIndex + 1 < textLower.length && textLower[afterIndex + 1] === 's') {
+        if (
+          !isWordBoundary &&
+          afterChar === 'e' &&
+          afterIndex + 1 < textLower.length &&
+          textLower[afterIndex + 1] === 's'
+        ) {
           const nextChar = afterIndex + 2 < textLower.length ? textLower[afterIndex + 2] : ' ';
           if (!/\w/.test(nextChar)) {
             isWordBoundary = true;
@@ -111,7 +112,7 @@ function remarkGlossaryTerms({
             term: term,
             termObj: termObj,
             // Store original case from the text
-            originalText: text.substring(index, index + matchLength)
+            originalText: text.substring(index, index + matchLength),
           });
         }
 
@@ -237,10 +238,11 @@ function remarkGlossaryTerms({
 
     // Inject MDX import for GlossaryTerm if we used it anywhere in this file
     if (usedGlossaryTerm) {
-      // Create import node matching MDX expectations (empty value + estree)
+      // Create import node matching MDX v3 expectations
+      // Both 'value' (the import string) and 'data.estree' (the parsed AST) are required
       const importNode = {
         type: 'mdxjsEsm',
-        value: '',
+        value: "import GlossaryTerm from '@theme/GlossaryTerm'",
         data: {
           estree: {
             type: 'Program',
@@ -254,7 +256,11 @@ function remarkGlossaryTerms({
                     local: { type: 'Identifier', name: 'GlossaryTerm' },
                   },
                 ],
-                source: { type: 'Literal', value: '@theme/GlossaryTerm' },
+                source: {
+                  type: 'Literal',
+                  value: '@theme/GlossaryTerm',
+                  raw: "'@theme/GlossaryTerm'",
+                },
               },
             ],
           },
@@ -274,13 +280,12 @@ function remarkGlossaryTerms({
           if (n.data?.estree?.body) {
             return n.data.estree.body.some(
               stmt =>
-                stmt.type === 'ImportDeclaration' &&
-                stmt.source?.value === '@theme/GlossaryTerm'
+                stmt.type === 'ImportDeclaration' && stmt.source?.value === '@theme/GlossaryTerm'
             );
           }
           return false;
         });
-      
+
       if (!hasExistingImport) {
         // Place import at the very beginning of the file (before all other nodes)
         // This ensures it's available when MDX compiles the JSX elements
@@ -297,5 +302,3 @@ function remarkGlossaryTerms({
     }
   };
 }
-
-module.exports = remarkGlossaryTerms;

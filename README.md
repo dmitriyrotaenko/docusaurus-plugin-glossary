@@ -343,10 +343,10 @@ module.exports = {
 
 ## Configuration Options
 
-| Option         | Type   | Default                    | Description                                               |
-| -------------- | ------ | -------------------------- | --------------------------------------------------------- |
-| `glossaryPath` | string | `'glossary/glossary.json'` | Path to glossary JSON file relative to site directory     |
-| `routePath`    | string | `'/glossary'`              | URL path for glossary page                                |
+| Option         | Type   | Default                    | Description                                           |
+| -------------- | ------ | -------------------------- | ----------------------------------------------------- |
+| `glossaryPath` | string | `'glossary/glossary.json'` | Path to glossary JSON file relative to site directory |
+| `routePath`    | string | `'/glossary'`              | URL path for glossary page                            |
 
 ## Customization
 

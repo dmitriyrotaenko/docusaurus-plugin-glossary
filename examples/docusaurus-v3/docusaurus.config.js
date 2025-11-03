@@ -1,8 +1,12 @@
-const path = require('path');
-const glossaryPlugin = require('../../');
+import path from 'path';
+import { fileURLToPath } from 'url';
+import glossaryPlugin from '../../lib/index.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /** @type {import('@docusaurus/types').Config} */
-module.exports = {
+export default {
   title: 'Glossary Plugin Example',
   url: 'https://example.com',
   baseUrl: '/',
@@ -22,7 +26,7 @@ module.exports = {
       '@docusaurus/preset-classic',
       /** @type {import('@docusaurus/preset-classic').Options} */ ({
         docs: {
-          sidebarPath: require.resolve('./sidebars.js'),
+          sidebarPath: path.resolve(__dirname, './sidebars.js'),
           remarkPlugins: [
             glossaryPlugin.getRemarkPlugin(
               {
@@ -46,7 +50,7 @@ module.exports = {
           ],
         },
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: path.resolve(__dirname, './src/css/custom.css'),
         },
       }),
     ],
@@ -55,14 +59,36 @@ module.exports = {
   plugins: [
     [
       // Use the local plugin from the repo root
-      path.resolve(__dirname, '../../'),
+      path.resolve(__dirname, '../../lib'),
       {
         glossaryPath: 'glossary/glossary.json',
         routePath: '/glossary',
-        autoLinkTerms: true,
       },
     ],
-    require.resolve('./plugins/mdx-components'),
+    // Plugin to configure webpack to ignore Node.js modules
+    function() {
+      return {
+        name: 'webpack-node-modules-config',
+        configureWebpack(config, isServer) {
+          return {
+            resolve: {
+              fallback: {
+                path: false,
+                url: false,
+                fs: false,
+                'fs-extra': false,
+                'graceful-fs': false,
+                jsonfile: false,
+                util: false,
+                assert: false,
+                stream: false,
+                constants: false,
+              },
+            },
+          };
+        },
+      };
+    },
   ],
 
   // remarkPlugins configured via preset (docs/pages)

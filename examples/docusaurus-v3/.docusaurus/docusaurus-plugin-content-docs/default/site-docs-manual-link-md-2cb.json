@@ -1,0 +1,16 @@
+{
+  "id": "manual-link",
+  "title": "Manually linking glossary terms",
+  "description": "Our API uses REST principles to provide a simple and consistent interface. Webhooks are supported for real-time notifications.",
+  "source": "@site/docs/manual-link.md",
+  "sourceDirName": ".",
+  "slug": "/manual-link",
+  "permalink": "/docs/manual-link",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Manually linking glossary terms"
+  }
+}

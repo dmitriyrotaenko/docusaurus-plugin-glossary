@@ -74,14 +74,13 @@ export default {
   ],
   "plugins": [
     [
-      "/Users/mcclowes/Development/mcclowes/docusaurus-plugin-glossary",
+      "/Users/mcclowes/Development/mcclowes/docusaurus-plugin-glossary/lib",
       {
         "glossaryPath": "glossary/glossary.json",
-        "routePath": "/glossary",
-        "autoLinkTerms": true
+        "routePath": "/glossary"
       }
     ],
-    "/Users/mcclowes/Development/mcclowes/docusaurus-plugin-glossary/examples/docusaurus-v3/plugins/mdx-components/index.js"
+    null
   ],
   "themeConfig": {
     "navbar": {

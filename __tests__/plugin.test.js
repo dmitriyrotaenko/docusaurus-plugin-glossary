@@ -1,7 +1,9 @@
-const path = require('path');
-const fs = require('fs-extra');
-const os = require('os');
-const glossaryPlugin = require('../index');
+import path from 'path';
+import fs from 'fs-extra';
+import os from 'os';
+import glossaryPluginModule from '../lib/index.js';
+
+const glossaryPlugin = glossaryPluginModule.default || glossaryPluginModule;
 
 describe('glossaryPlugin', () => {
   let tempDir;

@@ -3,7 +3,7 @@
   "permalink": "/",
   "source": "@site/src/pages/index.mdx",
   "title": "Home",
-  "description": "Welcome to the example site. Our  uses RESTful principles.",
+  "description": "A comprehensive Docusaurus plugin that provides glossary functionality with an auto-generated glossary page, searchable terms, and inline term tooltips.",
   "frontMatter": {
     "title": "Home"
   },

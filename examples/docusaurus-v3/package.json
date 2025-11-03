@@ -13,7 +13,7 @@
     "@docusaurus/preset-classic": "^3.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "docusaurus-plugin-glossary": "file:../.."
+    "docusaurus-plugin-glossary": "file:../../lib"
   },
   "engines": {
     "node": ">=16.14"

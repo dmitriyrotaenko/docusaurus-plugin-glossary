@@ -4,11 +4,153 @@ title: Home
 
 import GlossaryTerm from '@theme/GlossaryTerm';
 
-# Glossary Plugin Example
+# docusaurus-plugin-glossary
+
+A comprehensive Docusaurus plugin that provides glossary functionality with an auto-generated glossary page, searchable terms, and inline term tooltips.
+
+> Compatibility: Fully compatible with Docusaurus v3 (MDX v3). If you were on a v2-era fork, please upgrade to the latest 1.x release of this plugin.
+
+## Features
+
+- **Auto-generated Glossary Page**: Displays all terms alphabetically with letter navigation
+- **Search Functionality**: Real-time search across terms and definitions
+- **GlossaryTerm Component**: Inline component for linking terms with tooltip previews
+- **Automatic Term Detection**: Automatically detect and link glossary terms in markdown files with tooltips
+- **Responsive Design**: Mobile-friendly UI with dark mode support
+- **Related Terms**: Link between related glossary terms
+- **Abbreviation Support**: Display full form of abbreviated terms
+- **Customizable**: Configure glossary path and route
+
+## Quick Start
+
+1. **Install the plugin:**
+
+   ```bash
+   npm install docusaurus-plugin-glossary
+   ```
+
+2. **Add to your `docusaurus.config.js`:**
+
+   ```javascript
+   const glossaryPlugin = require('docusaurus-plugin-glossary');
+
+   module.exports = {
+     // ... other config
+     presets: [
+       [
+         '@docusaurus/preset-classic',
+         {
+           docs: {
+             // Add the remark plugin to enable auto-linking in docs
+             remarkPlugins: [
+               glossaryPlugin.getRemarkPlugin(
+                 {
+                   glossaryPath: 'glossary/glossary.json',
+                   routePath: '/glossary',
+                 },
+                 { siteDir: __dirname }
+               ),
+             ],
+           },
+           pages: {
+             // Add the remark plugin to enable auto-linking in pages
+             remarkPlugins: [
+               glossaryPlugin.getRemarkPlugin(
+                 {
+                   glossaryPath: 'glossary/glossary.json',
+                   routePath: '/glossary',
+                 },
+                 { siteDir: __dirname }
+               ),
+             ],
+           },
+         },
+       ],
+     ],
+     plugins: [
+       [
+         'docusaurus-plugin-glossary',
+         {
+           glossaryPath: 'glossary/glossary.json', // Path to your glossary file
+           routePath: '/glossary', // URL path for glossary page
+         },
+       ],
+     ],
+     // ... other config
+   };
+   ```
+
+   **Note:** You need to configure the remark plugin in both the plugin AND the preset (for docs/pages) to enable auto-linking of terms.
+
+3. **Create your glossary file at `glossary/glossary.json`:**
+
+   ```json
+   {
+     "description": "A collection of technical terms and their definitions",
+     "terms": [
+       {
+         "term": "API",
+         "abbreviation": "Application Programming Interface",
+         "definition": "A set of rules and protocols that allows different software applications to communicate with each other.",
+         "relatedTerms": ["REST", "GraphQL"]
+       },
+       {
+         "term": "REST",
+         "abbreviation": "Representational State Transfer",
+         "definition": "An architectural style for designing networked applications.",
+         "relatedTerms": ["API", "HTTP"]
+       }
+     ]
+   }
+   ```
+
+4. **Start your dev server:**
+
+   ```bash
+   npm run start
+   ```
+
+5. **That's it!**
+   - Visit `/glossary` to see your glossary page
+   - Write markdown normally - terms will automatically be linked with tooltips
+   - Use `<GlossaryTerm>` component in MDX for manual control
+
+## Example Usage
 
 Welcome to the example site. Our <GlossaryTerm term="API" /> uses <GlossaryTerm term="REST">RESTful</GlossaryTerm> principles.
 
-Check the full glossary at /glossary.
+Check the full glossary at [/glossary](/glossary).
 
+### Using the GlossaryTerm Component
 
+```mdx
+import GlossaryTerm from '@theme/GlossaryTerm';
+
+Our <GlossaryTerm term="API" /> uses <GlossaryTerm term="REST">RESTful</GlossaryTerm> principles.
+```
+
+### Automatic Detection
+
+With the remark plugin configured, glossary terms are **automatically detected and linked** in all your markdown files. Simply write your content normally:
+
+```markdown
+Our API uses REST principles to provide a simple interface.
+```
+
+Terms like "API" and "REST" will automatically be:
+- Detected if they're defined in your glossary
+- Styled with a dotted underline
+- Display a tooltip with the definition on hover
+- Link to the full glossary page entry
+
+## Configuration Options
+
+| Option         | Type   | Default                    | Description                                               |
+| -------------- | ------ | -------------------------- | --------------------------------------------------------- |
+| `glossaryPath` | string | `'glossary/glossary.json'` | Path to glossary JSON file relative to site directory     |
+| `routePath`    | string | `'/glossary'`              | URL path for glossary page                                |
+
+## Learn More
+
+For complete documentation, including troubleshooting, customization options, and advanced usage, see the [full documentation](/docs/intro) or check the [README on GitHub](https://github.com/your-repo/docusaurus-plugin-glossary).
 
