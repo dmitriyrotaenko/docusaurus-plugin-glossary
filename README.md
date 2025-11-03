@@ -2,6 +2,8 @@
 
 A comprehensive Docusaurus plugin that provides glossary functionality with an auto-generated glossary page, searchable terms, and inline term tooltips.
 
+> Compatibility: Fully compatible with Docusaurus v3 (MDX v3). If you were on a v2-era fork, please upgrade to the latest 1.x release of this plugin. No manual MDX pipeline wiring is required when `autoLinkTerms` is enabled (default).
+
 ## Features
 
 - **Auto-generated Glossary Page**: Displays all terms alphabetically with letter navigation
@@ -38,7 +40,7 @@ A comprehensive Docusaurus plugin that provides glossary functionality with an a
    };
    ```
    
-   **That's it!** The remark plugin is automatically configured - no manual `markdown.remarkPlugins` setup needed.
+   **That’s it!** On Docusaurus v3, the remark plugin is automatically configured via the plugin’s `configureMarkdown` hook — no manual `markdown.remarkPlugins` setup needed.
 
 3. **Create your glossary file at `glossary/glossary.json`:**
    ```json
@@ -167,6 +169,24 @@ module.exports = {
   },
 };
 ```
+
+## Docusaurus v3 Notes and Troubleshooting
+
+- **MDX imports**: The plugin injects `import GlossaryTerm from '@theme/GlossaryTerm';` automatically when it auto-links a term. If you’re writing MDX manually, you can also import and use it yourself:
+  
+  ```mdx
+  import GlossaryTerm from '@theme/GlossaryTerm';
+  
+  Our <GlossaryTerm term="API" /> uses <GlossaryTerm term="REST">RESTful</GlossaryTerm> principles.
+  ```
+
+- **No tooltips or no auto-linking?**
+  - Confirm you’re on `@docusaurus/core@^3` and `react@^18`.
+  - Ensure the plugin is listed in `plugins` and `autoLinkTerms` is not disabled.
+  - Visit `/glossary`. If the page or route fails to render, verify your `glossaryPath` file exists and contains a `terms` array.
+  - If you previously used a local patch for `1.0.0`, remove it when using `1.0.2+`; the plugin bundles the v3-compatible theme and remark integration.
+
+- **Opting out of auto-linking**: set `autoLinkTerms: false` and add the remark plugin manually (see above), or only use the `<GlossaryTerm />` component where you want explicit control.
 
 ### Step 3: Use Glossary Terms in Your Content
 

@@ -168,6 +168,7 @@ function remarkGlossaryTerms({
   }
 
   return (tree) => {
+    let usedGlossaryTerm = false;
     visit(tree, 'text', (node, index, parent) => {
       // Skip text nodes inside code blocks, links, or existing MDX components
       if (
@@ -199,6 +200,12 @@ function remarkGlossaryTerms({
               };
             }
           }
+          if (
+            replacement.type === 'mdxJsxFlowElement' ||
+            replacement.type === 'mdxJsxTextElement'
+          ) {
+            usedGlossaryTerm = true;
+          }
           return replacement;
         });
 
@@ -207,6 +214,40 @@ function remarkGlossaryTerms({
         return index + newNodes.length - 1; // Return new index to continue
       }
     });
+
+    // Inject MDX import for GlossaryTerm if we used it anywhere in this file
+    if (usedGlossaryTerm) {
+      const importNode = {
+        type: 'mdxjsEsm',
+        value: "import GlossaryTerm from '@theme/GlossaryTerm';",
+        data: {
+          estree: {
+            type: 'Program',
+            sourceType: 'module',
+            body: [
+              {
+                type: 'ImportDeclaration',
+                specifiers: [
+                  {
+                    type: 'ImportDefaultSpecifier',
+                    local: { type: 'Identifier', name: 'GlossaryTerm' }
+                  }
+                ],
+                source: { type: 'Literal', value: '@theme/GlossaryTerm' }
+              }
+            ]
+          }
+        }
+      };
+
+      // Avoid duplicate imports if already present
+      const hasExistingImport = Array.isArray(tree.children) && tree.children.some(
+        (n) => n.type === 'mdxjsEsm' && typeof n.value === 'string' && n.value.includes("@theme/GlossaryTerm")
+      );
+      if (!hasExistingImport) {
+        tree.children.unshift(importNode);
+      }
+    }
   };
 }
 
