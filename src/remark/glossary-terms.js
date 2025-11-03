@@ -286,9 +286,10 @@ export default function remarkGlossaryTerms({
     if (usedGlossaryTerm) {
       // Create import node matching MDX v3 expectations
       // Both 'value' (the import string) and 'data.estree' (the parsed AST) are required
+      // Use double quotes in raw value for better compatibility
       const importNode = {
         type: 'mdxjsEsm',
-        value: "import GlossaryTerm from '@theme/GlossaryTerm'",
+        value: 'import GlossaryTerm from "@theme/GlossaryTerm";',
         data: {
           estree: {
             type: 'Program',
@@ -305,7 +306,7 @@ export default function remarkGlossaryTerms({
                 source: {
                   type: 'Literal',
                   value: '@theme/GlossaryTerm',
-                  raw: "'@theme/GlossaryTerm'",
+                  raw: '"@theme/GlossaryTerm"',
                 },
               },
             ],
@@ -338,11 +339,27 @@ export default function remarkGlossaryTerms({
         if (!Array.isArray(tree.children)) {
           tree.children = [];
         }
-        // Insert at the very beginning (index 0) to ensure it's processed first
-        tree.children.unshift(importNode);
+        // Find the first non-frontmatter node to insert after frontmatter
+        // Frontmatter nodes are typically 'yaml' or 'toml' type
+        let insertIndex = 0;
+        for (let i = 0; i < tree.children.length; i++) {
+          const node = tree.children[i];
+          // Skip frontmatter nodes (yaml, toml) but keep imports before content
+          if (node.type === 'yaml' || node.type === 'toml') {
+            insertIndex = i + 1;
+            continue;
+          }
+          // If we find an import or content node, insert before it
+          if (node.type === 'mdxjsEsm' || node.type === 'heading' || node.type === 'paragraph') {
+            insertIndex = i;
+            break;
+          }
+        }
+        // Insert the import at the calculated position
+        tree.children.splice(insertIndex, 0, importNode);
         // Debug: verify import was added (remove in production)
         if (process.env.NODE_ENV !== 'production') {
-          console.log('[glossary-plugin] Injected GlossaryTerm import');
+          console.log('[glossary-plugin] Injected GlossaryTerm import at position', insertIndex);
         }
       }
     }
