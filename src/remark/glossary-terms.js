@@ -10,6 +10,10 @@ const CACHE_TTL = 5000; // 5 seconds TTL to allow for file changes during dev
 /**
  * Creates a remark plugin that automatically detects and replaces glossary terms in markdown
  *
+ * This plugin transforms plain text terms into <GlossaryTerm> JSX elements.
+ * The GlossaryTerm component is globally available via the MDXComponents theme wrapper,
+ * so no import injection is needed - MDX files can use it without explicit imports.
+ *
  * @param {object} options - Plugin options
  * @param {Array} options.terms - Array of glossary term objects with {term, definition}
  * @param {string} options.glossaryPath - Path to glossary JSON file (optional, if terms not provided)
@@ -259,6 +263,7 @@ export default function remarkGlossaryTerms({
           if (replacement.type === 'mdxJsxFlowElement') {
             // In paragraph context, we need mdxJsxTextElement instead
             if (parent.type === 'paragraph') {
+              usedGlossaryTerm = true;
               return {
                 type: 'mdxJsxTextElement',
                 name: replacement.name,
@@ -266,11 +271,6 @@ export default function remarkGlossaryTerms({
                 children: replacement.children,
               };
             }
-          }
-          if (
-            replacement.type === 'mdxJsxFlowElement' ||
-            replacement.type === 'mdxJsxTextElement'
-          ) {
             usedGlossaryTerm = true;
           }
           return replacement;
@@ -282,11 +282,9 @@ export default function remarkGlossaryTerms({
       }
     });
 
-    // Inject MDX import for GlossaryTerm if we used it anywhere in this file
+    // Inject MDX import for GlossaryTerm if we used it
+    // The component is available via theme path, so we just need to import it
     if (usedGlossaryTerm) {
-      // Create import node matching MDX v3 expectations
-      // Both 'value' (the import string) and 'data.estree' (the parsed AST) are required
-      // Use double quotes in raw value for better compatibility
       const importNode = {
         type: 'mdxjsEsm',
         value: 'import GlossaryTerm from "@theme/GlossaryTerm";',
@@ -314,53 +312,27 @@ export default function remarkGlossaryTerms({
         },
       };
 
-      // Avoid duplicate imports if already present
-      const hasExistingImport =
+      // Check for existing import
+      const hasImport =
         Array.isArray(tree.children) &&
-        tree.children.some(n => {
-          if (n.type !== 'mdxjsEsm') return false;
-          // Check value string (for older MDX format)
-          if (typeof n.value === 'string' && n.value.includes('@theme/GlossaryTerm')) {
-            return true;
-          }
-          // Check estree data (for newer MDX format)
-          if (n.data?.estree?.body) {
-            return n.data.estree.body.some(
-              stmt =>
-                stmt.type === 'ImportDeclaration' && stmt.source?.value === '@theme/GlossaryTerm'
-            );
-          }
-          return false;
-        });
+        tree.children.some(n =>
+          n.type === 'mdxjsEsm' &&
+          (n.value?.includes('@theme/GlossaryTerm') ||
+            n.data?.estree?.body?.some(s => s.source?.value === '@theme/GlossaryTerm'))
+        );
 
-      if (!hasExistingImport) {
-        // Place import at the very beginning of the file (before all other nodes)
-        // This ensures it's available when MDX compiles the JSX elements
-        if (!Array.isArray(tree.children)) {
-          tree.children = [];
-        }
-        // Find the first non-frontmatter node to insert after frontmatter
-        // Frontmatter nodes are typically 'yaml' or 'toml' type
+      if (!hasImport) {
+        if (!Array.isArray(tree.children)) tree.children = [];
         let insertIndex = 0;
         for (let i = 0; i < tree.children.length; i++) {
           const node = tree.children[i];
-          // Skip frontmatter nodes (yaml, toml) but keep imports before content
           if (node.type === 'yaml' || node.type === 'toml') {
             insertIndex = i + 1;
-            continue;
-          }
-          // If we find an import or content node, insert before it
-          if (node.type === 'mdxjsEsm' || node.type === 'heading' || node.type === 'paragraph') {
-            insertIndex = i;
+          } else {
             break;
           }
         }
-        // Insert the import at the calculated position
         tree.children.splice(insertIndex, 0, importNode);
-        // Debug: verify import was added (remove in production)
-        if (process.env.NODE_ENV !== 'production') {
-          console.log('[glossary-plugin] Injected GlossaryTerm import at position', insertIndex);
-        }
       }
     }
   };
