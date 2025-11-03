@@ -23,7 +23,7 @@
   ],
   "scripts": {
     "build": "tsc && node scripts/build.js",
-    "watch": "node scripts/watch.js",
+    "watch": "tsc && node scripts/watch.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
