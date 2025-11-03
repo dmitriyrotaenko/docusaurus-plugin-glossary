@@ -122,7 +122,7 @@ export default function GlossaryTerm({ term, definition, routePath = '/glossary'
               : undefined
           }
         >
-          <strong>{term}:</strong> {effectiveDefinition}
+          <strong>{term}</strong> {effectiveDefinition}
         </span>
       )}
     </span>
