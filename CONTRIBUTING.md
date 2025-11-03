@@ -73,7 +73,21 @@ We welcome pull requests! Please follow these guidelines:
    npm run test:coverage
    ```
 
-4. **Run the example site:**
+4. **Build the project:**
+
+   ```bash
+   npm run build
+   ```
+
+   This compiles TypeScript from `src/index.ts` to `lib/index.js` and copies other files from `src/` to `lib/`.
+
+   For development with auto-rebuild on changes:
+
+   ```bash
+   npm run watch
+   ```
+
+5. **Run the example site:**
 
    ```bash
    npm run example:start
@@ -81,13 +95,13 @@ We welcome pull requests! Please follow these guidelines:
 
    This will start the development server for the example Docusaurus site in `examples/docusaurus-v3/`
 
-5. **Build the example site:**
+6. **Build the example site:**
 
    ```bash
    npm run example:build
    ```
 
-6. **Format code:**
+7. **Format code:**
 
    ```bash
    npm run format
@@ -101,29 +115,43 @@ We welcome pull requests! Please follow these guidelines:
 
 ## Project Structure
 
+This project uses TypeScript for the main entry point and JavaScript for components. Source files are in `src/` and compiled output goes to `lib/`.
+
 ```
 docusaurus-plugin-glossary/
-├── index.js                    # Main plugin entry point
-├── components/
-│   ├── GlossaryPage.js        # Main glossary page component
-│   ├── GlossaryPage.module.css
-│   ├── GlossaryPage.test.js   # Component tests
-│   └── ...
-├── theme/
-│   └── GlossaryTerm/
-│       ├── index.js           # Inline term component
-│       ├── styles.module.css  # Term styles
-│       └── index.test.js      # Component tests
-├── remark/
-│   └── glossary-terms.js      # Remark plugin for auto-linking
+├── src/
+│   ├── index.ts               # Main plugin entry point (TypeScript)
+│   ├── components/
+│   │   ├── GlossaryPage.js    # Main glossary page component
+│   │   ├── GlossaryPage.module.css
+│   │   └── GlossaryPage.test.js
+│   ├── theme/
+│   │   └── GlossaryTerm/
+│   │       ├── index.js       # Inline term component
+│   │       ├── styles.module.css
+│   │       └── index.test.js
+│   └── remark/
+│       └── glossary-terms.js  # Remark plugin for auto-linking
+├── lib/                       # Compiled output (generated, don't edit directly)
+│   ├── index.js               # Compiled from src/index.ts
+│   ├── components/            # Copied from src/components/
+│   ├── theme/                 # Copied from src/theme/
+│   └── remark/                # Copied from src/remark/
 ├── __tests__/
 │   └── plugin.test.js         # Plugin lifecycle tests
 ├── jest/
 │   ├── mocks/                 # Test mocks
-│   └── cssMapper.js          # CSS module mapper for tests
+│   ├── cssMapper.js           # CSS module mapper for tests
+│   └── setupFiles.js
 ├── examples/
-│   └── docusaurus-v3/        # Example Docusaurus site
-└── jest.config.js            # Jest configuration
+│   └── docusaurus-v3/         # Example Docusaurus site
+├── scripts/
+│   ├── build.js               # Build script (TypeScript compilation + file copying)
+│   ├── watch.js               # Watch script for development
+│   └── ...
+├── jest.config.cjs            # Jest configuration
+├── tsconfig.json              # TypeScript configuration
+└── package.json
 ```
 
 ## Testing
@@ -138,18 +166,32 @@ This project uses Jest for testing. When adding new features or fixing bugs:
 ### Test Organization
 
 - Plugin lifecycle tests: `__tests__/plugin.test.js`
-- Component tests: alongside components (e.g., `components/GlossaryPage.test.js`)
+- Component tests: alongside components (e.g., `src/components/GlossaryPage.test.js`, `src/theme/GlossaryTerm/index.test.js`)
 - Use `jest/mocks/` for mocking Docusaurus APIs and dependencies
+
+### Working with TypeScript
+
+When working on the main plugin file (`src/index.ts`):
+
+1. Edit `src/index.ts` (the TypeScript source)
+2. Run `npm run build` to compile to `lib/index.js`
+3. The compiled `lib/index.js` is what gets published to npm (via the `main` field in `package.json`)
+4. For development, use `npm run watch` to automatically rebuild on changes
 
 ## Code Style
 
 - We use Prettier for code formatting
-- JavaScript/JSX should follow modern ES6+ conventions
+- TypeScript for the main plugin entry point (`src/index.ts`)
+- JavaScript/JSX for components (in `src/components/`, `src/theme/`, `src/remark/`)
+- Follow modern ES6+ conventions
 - Use meaningful variable and function names
 - Add comments for complex logic
 - Keep functions focused and small when possible
 
-Run `npm run format` before committing to ensure consistent formatting.
+**Important**: 
+- Edit source files in `src/`, not `lib/`
+- Run `npm run build` before testing locally
+- Run `npm run format` before committing to ensure consistent formatting
 
 ## Commit Messages
 
@@ -193,4 +235,5 @@ If you have questions about contributing, please:
 ## License
 
 By contributing, you agree that your contributions will be licensed under the same MIT License as the project.
+
 
