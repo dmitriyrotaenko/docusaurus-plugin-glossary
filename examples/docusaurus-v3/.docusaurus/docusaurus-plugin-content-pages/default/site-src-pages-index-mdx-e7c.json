@@ -1,0 +1,11 @@
+{
+  "type": "mdx",
+  "permalink": "/",
+  "source": "@site/src/pages/index.mdx",
+  "title": "Home",
+  "description": "Welcome to the example site. Our  uses RESTful principles.",
+  "frontMatter": {
+    "title": "Home"
+  },
+  "unlisted": false
+}

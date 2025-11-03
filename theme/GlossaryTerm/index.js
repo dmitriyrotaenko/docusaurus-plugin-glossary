@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import {usePluginData} from '@docusaurus/useGlobalData';
 import styles from './styles.module.css';
 
 /**
@@ -20,13 +21,31 @@ import styles from './styles.module.css';
 export default function GlossaryTerm({ term, definition, routePath = '/glossary', children }) {
   const [showTooltip, setShowTooltip] = useState(false);
 
+  // Pull definition/route from plugin global data if not provided
+  const pluginData = usePluginData('docusaurus-plugin-glossary');
+  const effectiveDefinition = useMemo(() => {
+    if (definition && typeof definition === 'string' && definition.length > 0) {
+      return definition;
+    }
+    const terms = (pluginData && pluginData.terms) || [];
+    const found = terms.find(
+      (t) => typeof t.term === 'string' && t.term.toLowerCase() === String(term).toLowerCase()
+    );
+    return found && found.definition ? found.definition : undefined;
+  }, [definition, pluginData, term]);
+
+  const effectiveRoutePath = useMemo(() => {
+    if (routePath && typeof routePath === 'string' && routePath.length > 0) return routePath;
+    return (pluginData && pluginData.routePath) || '/glossary';
+  }, [pluginData, routePath]);
+
   const displayText = children || term;
   const termId = term.toLowerCase().replace(/\s+/g, '-');
 
   return (
     <span className={styles.glossaryTermWrapper}>
       <a
-        href={`${routePath}#${termId}`}
+        href={`${effectiveRoutePath}#${termId}`}
         className={styles.glossaryTerm}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
@@ -36,13 +55,13 @@ export default function GlossaryTerm({ term, definition, routePath = '/glossary'
       >
         {displayText}
       </a>
-      {definition && (
+      {effectiveDefinition && (
         <span
           id={`tooltip-${termId}`}
           className={`${styles.tooltip} ${showTooltip ? styles.tooltipVisible : ''}`}
           role="tooltip"
         >
-          <strong>{term}:</strong> {definition}
+          <strong>{term}:</strong> {effectiveDefinition}
         </span>
       )}
     </span>

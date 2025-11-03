@@ -1,0 +1,18 @@
+{
+  "id": "intro",
+  "title": "Introduction",
+  "description": "Our API uses REST principles to provide a simple and consistent interface. Webhooks are supported for real-time notifications.",
+  "source": "@site/docs/intro.md",
+  "sourceDirName": ".",
+  "slug": "/intro",
+  "permalink": "/docs/intro",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "id": "intro",
+    "title": "Introduction"
+  },
+  "sidebar": "tutorialSidebar"
+}

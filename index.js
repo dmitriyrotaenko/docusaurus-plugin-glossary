@@ -81,7 +81,7 @@ function glossaryPlugin(context, options = {}) {
     },
 
     async contentLoaded({ content, actions }) {
-      const { createData, addRoute } = actions;
+      const { createData, addRoute, setGlobalData } = actions;
 
       // Create data file that can be imported by components
       const glossaryDataPath = await createData('glossary-data.json', JSON.stringify(content));
@@ -103,6 +103,12 @@ function glossaryPlugin(context, options = {}) {
         modules: {
           glossaryData: glossaryDataPath,
         },
+      });
+
+      // Expose global data for runtime lookups (used by GlossaryTerm)
+      setGlobalData({
+        terms: content.terms || [],
+        routePath,
       });
     },
 
