@@ -17,7 +17,7 @@ async function build() {
   await fs.ensureDir(libDir);
 
   // Copy JS files and directories (TypeScript compiles index.ts to index.js)
-  const itemsToCopy = ['components', 'theme', 'remark'];
+  const itemsToCopy = ['components', 'theme', 'remark', 'client'];
 
   for (const item of itemsToCopy) {
     const sourcePath = join(srcDir, item);

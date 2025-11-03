@@ -183,15 +183,33 @@ export interface GlossaryData {
  *
  * A plugin that provides glossary functionality with:
  * - Glossary terms defined in a JSON file
- * - Auto-generated glossary page
- * - GlossaryTerm component for inline definitions
- * - Tooltips on hover
- * - Automatic glossary term detection in markdown files (requires manual remark plugin configuration)
+ * - Auto-generated glossary page with term definitions
+ * - GlossaryTerm component for inline definitions with interactive tooltips
+ * - Automatic client-side initialization via getClientModules() (no manual imports needed)
+ * - Optional automatic glossary term detection in markdown files via remark plugin
  *
- * IMPORTANT: To enable auto-linking of glossary terms, you must manually add the remark plugin
- * to your docusaurus.config.js using the getRemarkPlugin helper:
+ * ## Basic Usage (Manual Term Markup)
  *
- * Example:
+ * Just install the plugin - the GlossaryTerm component is automatically available:
+ * ```javascript
+ * module.exports = {
+ *   plugins: [
+ *     ['docusaurus-plugin-glossary', {
+ *       glossaryPath: 'glossary/glossary.json',
+ *       routePath: '/glossary',
+ *     }],
+ *   ],
+ * };
+ * ```
+ *
+ * Then use `<GlossaryTerm>` in your MDX files without importing:
+ * ```mdx
+ * <GlossaryTerm term="API">API</GlossaryTerm>
+ * ```
+ *
+ * ## Advanced Usage (Automatic Term Detection)
+ *
+ * To automatically detect and link glossary terms in markdown, add the remark plugin:
  * ```javascript
  * const glossaryPlugin = require('docusaurus-plugin-glossary');
  *
@@ -199,14 +217,6 @@ export interface GlossaryData {
  *   presets: [
  *     ['@docusaurus/preset-classic', {
  *       docs: {
- *         remarkPlugins: [
- *           glossaryPlugin.getRemarkPlugin({
- *             glossaryPath: 'glossary/glossary.json',
- *             routePath: '/glossary',
- *           }, { siteDir: __dirname }),
- *         ],
- *       },
- *       pages: {
  *         remarkPlugins: [
  *           glossaryPlugin.getRemarkPlugin({
  *             glossaryPath: 'glossary/glossary.json',
@@ -246,6 +256,12 @@ export default function glossaryPlugin(
 
   return {
     name: 'docusaurus-plugin-glossary',
+
+    getClientModules() {
+      // Compute __dirname if not already set (for webpack bundling compatibility)
+      const pluginDirname = __dirname || getDirname();
+      return [path.resolve(pluginDirname, './client/index.js')];
+    },
 
     async loadContent() {
       // Load glossary terms from JSON file
