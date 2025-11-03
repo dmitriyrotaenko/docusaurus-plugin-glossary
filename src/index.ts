@@ -14,51 +14,78 @@ function getDirname(): string {
   }
 
   // Use cached value if available
-  if ((globalThis as any).__dirnameCache) {
-    return (globalThis as any).__dirnameCache;
+  const global = globalThis as any;
+  if (global.__dirnameCache) {
+    return global.__dirnameCache;
   }
 
-  // In Jest/Babel transformed environment, __filename is available
-  // @ts-ignore - __filename is available after Babel transforms ES modules to CommonJS
-  if (typeof __filename !== 'undefined') {
-    const computedDirname = path.dirname(__filename);
-    (globalThis as any).__dirnameCache = computedDirname;
-    return computedDirname;
-  }
-
-  // Check if import.meta.url is available
-  // Use try-catch to handle cases where import.meta is undefined (e.g., in Jest before transform)
-  let hasImportMetaUrl = false;
-  try {
-    hasImportMetaUrl = typeof import.meta.url !== 'undefined';
-  } catch {
-    // import.meta is undefined (e.g., in Jest environment before Babel transform)
+  // Use a lock to prevent race conditions when multiple calls happen concurrently
+  // This ensures only one execution path computes and sets the cache
+  if (global.__dirnameComputing) {
+    // Another call is already computing __dirname, wait and retry
+    // In practice, this should be rare since module initialization is typically sequential
+    let retries = 0;
+    while (global.__dirnameComputing && retries < 10) {
+      retries++;
+      // Busy wait with a small delay (not ideal but works for module init)
+    }
+    // Return cached value if available after waiting
+    if (global.__dirnameCache) {
+      return global.__dirnameCache;
+    }
+    // If still computing after retries, return empty to avoid deadlock
     return '';
   }
 
-  if (!hasImportMetaUrl) {
-    return '';
-  }
+  // Set computing flag to prevent concurrent execution
+  global.__dirnameComputing = true;
 
-  // Try to compute __dirname using fileURLToPath via createRequire
-  // This avoids webpack trying to bundle fileURLToPath at module load time
   try {
-    const require = createRequire(import.meta.url);
-    const urlModule = require('url');
-    
-    // Check if fileURLToPath is actually a function (webpack may provide a broken polyfill)
-    if (urlModule && typeof urlModule.fileURLToPath === 'function') {
-      const __filename = urlModule.fileURLToPath(import.meta.url);
+    // In Jest/Babel transformed environment, __filename is available
+    // @ts-ignore - __filename is available after Babel transforms ES modules to CommonJS
+    if (typeof __filename !== 'undefined') {
       const computedDirname = path.dirname(__filename);
-      (globalThis as any).__dirnameCache = computedDirname;
+      global.__dirnameCache = computedDirname;
       return computedDirname;
     }
-  } catch (error) {
-    // If webpack provides a broken polyfill or require fails, return empty
-    // __dirname will be computed when the plugin function is called (server-side only)
+
+    // Check if import.meta.url is available
+    // Use try-catch to handle cases where import.meta is undefined (e.g., in Jest before transform)
+    let hasImportMetaUrl = false;
+    try {
+      hasImportMetaUrl = typeof import.meta.url !== 'undefined';
+    } catch {
+      // import.meta is undefined (e.g., in Jest environment before Babel transform)
+      return '';
+    }
+
+    if (!hasImportMetaUrl) {
+      return '';
+    }
+
+    // Try to compute __dirname using fileURLToPath via createRequire
+    // This avoids webpack trying to bundle fileURLToPath at module load time
+    try {
+      const require = createRequire(import.meta.url);
+      const urlModule = require('url');
+
+      // Check if fileURLToPath is actually a function (webpack may provide a broken polyfill)
+      if (urlModule && typeof urlModule.fileURLToPath === 'function') {
+        const __filename = urlModule.fileURLToPath(import.meta.url);
+        const computedDirname = path.dirname(__filename);
+        global.__dirnameCache = computedDirname;
+        return computedDirname;
+      }
+    } catch (error) {
+      // If webpack provides a broken polyfill or require fails, return empty
+      // __dirname will be computed when the plugin function is called (server-side only)
+      return '';
+    }
     return '';
+  } finally {
+    // Always clear the computing flag
+    global.__dirnameComputing = false;
   }
-  return '';
 }
 
 // Initialize __dirname at module load time, but handle webpack bundling gracefully
@@ -67,33 +94,51 @@ let peerDepsValidated: boolean = false;
 try {
   // Only compute __dirname if we're in Node.js (not during webpack bundling)
   if (typeof process !== 'undefined' && process.versions?.node) {
-    // In Jest/Babel transformed environment, __filename is available
-    // @ts-ignore - __filename is available after Babel transforms ES modules to CommonJS
-    if (typeof __filename !== 'undefined') {
-      __dirname = path.dirname(__filename);
-      validatePeerDependencies(__dirname);
-      peerDepsValidated = true;
-    } else {
-      // Check if import.meta.url is available - use try-catch since import.meta might be undefined
-      let hasImportMetaUrl = false;
+    const global = globalThis as any;
+
+    // Set lock to prevent concurrent getDirname() calls during module init
+    if (!global.__dirnameComputing) {
+      global.__dirnameComputing = true;
+
       try {
-        hasImportMetaUrl = typeof import.meta.url !== 'undefined';
-      } catch {
-        // import.meta is undefined (e.g., in Jest environment before Babel transform)
-        hasImportMetaUrl = false;
-      }
-      
-      if (hasImportMetaUrl) {
-        const require = createRequire(import.meta.url);
-        const urlModule = require('url');
-        
-        // Check if fileURLToPath is actually a function (not a webpack polyfill)
-        if (urlModule && typeof urlModule.fileURLToPath === 'function') {
-          const __filename = urlModule.fileURLToPath(import.meta.url);
+        // In Jest/Babel transformed environment, __filename is available
+        // @ts-ignore - __filename is available after Babel transforms ES modules to CommonJS
+        if (typeof __filename !== 'undefined') {
           __dirname = path.dirname(__filename);
+          global.__dirnameCache = __dirname;
           validatePeerDependencies(__dirname);
           peerDepsValidated = true;
+        } else {
+          // Check if import.meta.url is available - use try-catch since import.meta might be undefined
+          let hasImportMetaUrl = false;
+          try {
+            hasImportMetaUrl = typeof import.meta.url !== 'undefined';
+          } catch {
+            // import.meta is undefined (e.g., in Jest environment before Babel transform)
+            hasImportMetaUrl = false;
+          }
+
+          if (hasImportMetaUrl) {
+            const require = createRequire(import.meta.url);
+            const urlModule = require('url');
+
+            // Check if fileURLToPath is actually a function (not a webpack polyfill)
+            if (urlModule && typeof urlModule.fileURLToPath === 'function') {
+              const __filename = urlModule.fileURLToPath(import.meta.url);
+              __dirname = path.dirname(__filename);
+              global.__dirnameCache = __dirname;
+              validatePeerDependencies(__dirname);
+              peerDepsValidated = true;
+            }
+          }
         }
+      } finally {
+        global.__dirnameComputing = false;
+      }
+    } else {
+      // Another module init is already computing, use cached value if available
+      if (global.__dirnameCache) {
+        __dirname = global.__dirnameCache;
       }
     }
   }
@@ -274,6 +319,9 @@ export default function glossaryPlugin(
 
 // Export remark plugin factory for use in markdown configuration
 export const remarkPlugin = remarkGlossaryTerms;
+
+// Export cache clearing utility
+export { clearGlossaryCache } from './remark/glossary-terms.js';
 
 /**
  * Helper function to get the configured remark plugin
