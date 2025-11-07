@@ -216,13 +216,15 @@ We prefer conventional commit messages when possible:
 
 ## Release Process
 
-Only maintainers can release new versions. The release process includes:
+Only maintainers can release new versions. Publishing to npm is automated via the `Publish to npm` GitHub Action.
 
-1. Update version in `package.json`
-2. Run tests to ensure everything passes
-3. Update CHANGELOG if needed
-4. Create a git tag
-5. Publish to npm
+1. Update the version in `package.json` and commit your changes
+2. Update the changelog if needed
+3. Create and push a tag (recommended format: `vX.Y.Z`)
+4. Draft and publish a GitHub release for the tag (or trigger the workflow manually via **Run workflow**)
+5. The GitHub Action installs dependencies, runs tests, and executes `npm publish` automatically
+
+> **Note:** The repository must have an `NPM_TOKEN` secret with publish permissions so the workflow can authenticate with npm.
 
 ## Questions?
 
