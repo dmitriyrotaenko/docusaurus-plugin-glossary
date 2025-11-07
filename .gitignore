@@ -19,6 +19,11 @@ coverage/
 # Jest
 .jest-cache/
 
+# Playwright
+playwright-report/
+test-results/
+playwright/.cache/
+
 # Environment variables
 .env
 .env.local
