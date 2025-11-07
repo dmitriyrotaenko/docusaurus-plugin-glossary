@@ -11,10 +11,10 @@ test.describe('Glossary Plugin', () => {
       // Check that terms are displayed
       await expect(page.locator('dt')).toHaveCount(3); // API, REST, Webhook
 
-      // Verify specific terms exist
-      await expect(page.getByText('API')).toBeVisible();
-      await expect(page.getByText('REST')).toBeVisible();
-      await expect(page.getByText('Webhook')).toBeVisible();
+      // Verify specific terms exist by targeting dt elements specifically
+      await expect(page.locator('dt').filter({ hasText: 'API' })).toBeVisible();
+      await expect(page.locator('dt').filter({ hasText: 'REST' })).toBeVisible();
+      await expect(page.locator('dt').filter({ hasText: 'Webhook' })).toBeVisible();
 
       // Check that definitions are displayed
       await expect(page.getByText(/A set of rules and protocols/)).toBeVisible();
@@ -49,8 +49,8 @@ test.describe('Glossary Plugin', () => {
 
       // Should show only API term
       await expect(page.locator('dt')).toHaveCount(1);
-      await expect(page.getByText('API')).toBeVisible();
-      await expect(page.getByText('REST')).not.toBeVisible();
+      await expect(page.locator('dt').filter({ hasText: 'API' })).toBeVisible();
+      await expect(page.locator('dt').filter({ hasText: 'REST' })).not.toBeVisible();
 
       // Clear search
       await searchInput.clear();
