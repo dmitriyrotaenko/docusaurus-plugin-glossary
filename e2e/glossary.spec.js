@@ -121,7 +121,7 @@ test.describe('Glossary Plugin', () => {
       // Note: "API" appears twice in the content, so we check for at least 1
       const apiLinks = page.locator('a[href*="/glossary#api"]');
       await expect(apiLinks).toHaveCount(2); // API appears twice in the content
-      await expect(page.locator('a[href*="/glossary#rest"]')).toHaveCount(1);
+      await expect(page.locator('a[href*="/glossary#rest"]')).toHaveCount(2); // REST appears twice in the content
       await expect(page.locator('a[href*="/glossary#webhook"]')).toHaveCount(1);
 
       // Hover over REST term

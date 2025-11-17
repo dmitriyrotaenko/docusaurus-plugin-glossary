@@ -49,5 +49,14 @@ jobs:
       - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access public
+        run: |
+          if ! npm publish --access public 2>&1 | tee /tmp/npm-publish.log; then
+            # Check if the error is about already published version
+            if grep -q "You cannot publish over the previously published versions" /tmp/npm-publish.log; then
+              echo "Version already published, treating as success"
+              exit 0
+            fi
+            # For any other error, fail normally
+            exit 1
+          fi
 

@@ -58,25 +58,13 @@ export interface GlossaryPresetOptions extends ClassicPresetOptions {
  * @param options - Preset options including glossary and classic preset options
  * @returns Preset configuration
  */
-export default function preset(
-  context: any,
-  options: GlossaryPresetOptions = {}
-): Preset {
+export default function preset(context: any, options: GlossaryPresetOptions = {}): Preset {
   // Explicitly extract glossary and any Docusaurus-added properties that shouldn't go to classic preset
   const { glossary = {}, id, ...restOptions } = options as any;
 
   // Extract only valid classic preset options
-  const {
-    docs,
-    blog,
-    pages,
-    theme,
-    gtag,
-    googleAnalytics,
-    googleTagManager,
-    sitemap,
-    debug,
-  } = restOptions;
+  const { docs, blog, pages, theme, gtag, googleAnalytics, googleTagManager, sitemap, debug } =
+    restOptions;
 
   // Build classic options object with only defined properties
   const classicOptions: any = {};
@@ -90,16 +78,10 @@ export default function preset(
   if (sitemap !== undefined) classicOptions.sitemap = sitemap;
   if (debug !== undefined) classicOptions.debug = debug;
 
-  const {
-    glossaryPath = 'glossary/glossary.json',
-    routePath = '/glossary',
-  } = glossary;
+  const { glossaryPath = 'glossary/glossary.json', routePath = '/glossary' } = glossary;
 
   // Get the remark plugin configuration
-  const remarkPlugin = getRemarkPlugin(
-    { glossaryPath, routePath },
-    { siteDir: context.siteDir }
-  );
+  const remarkPlugin = getRemarkPlugin({ glossaryPath, routePath }, { siteDir: context.siteDir });
 
   // Extend docs configuration with glossary remark plugin
   const docsConfig = classicOptions.docs || {};
@@ -121,8 +103,7 @@ export default function preset(
   const blogConfig = classicOptions.blog;
   let extendedBlogConfig = blogConfig;
   if (blogConfig && blogConfig !== false) {
-    const blogRemarkPlugins =
-      typeof blogConfig === 'object' ? blogConfig.remarkPlugins || [] : [];
+    const blogRemarkPlugins = typeof blogConfig === 'object' ? blogConfig.remarkPlugins || [] : [];
     extendedBlogConfig =
       typeof blogConfig === 'object'
         ? {
@@ -153,7 +134,8 @@ export default function preset(
 
   // Add classic preset plugins individually
   if (extendedDocsConfig) plugins.push(['@docusaurus/plugin-content-docs', extendedDocsConfig]);
-  if (extendedBlogConfig && extendedBlogConfig !== false) plugins.push(['@docusaurus/plugin-content-blog', extendedBlogConfig]);
+  if (extendedBlogConfig && extendedBlogConfig !== false)
+    plugins.push(['@docusaurus/plugin-content-blog', extendedBlogConfig]);
   if (extendedPagesConfig) plugins.push(['@docusaurus/plugin-content-pages', extendedPagesConfig]);
   if (gtag) plugins.push(['@docusaurus/plugin-google-gtag', gtag]);
   if (googleAnalytics) plugins.push(['@docusaurus/plugin-google-analytics', googleAnalytics]);

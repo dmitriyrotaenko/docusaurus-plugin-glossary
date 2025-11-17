@@ -61,12 +61,23 @@ export default function GlossaryTerm({ term, definition, routePath = '/glossary'
 
   useEffect(() => {
     if (!showTooltip) return;
-    updatePosition();
+
+    // Use double requestAnimationFrame to ensure DOM is fully rendered and layout is complete
+    // This ensures tooltipRef.current is available and has proper dimensions
+    let rafId2;
+    const rafId1 = requestAnimationFrame(() => {
+      rafId2 = requestAnimationFrame(() => {
+        updatePosition();
+      });
+    });
+
     const onScroll = () => updatePosition();
     const onResize = () => updatePosition();
     window.addEventListener('scroll', onScroll, true);
     window.addEventListener('resize', onResize);
     return () => {
+      cancelAnimationFrame(rafId1);
+      if (rafId2) cancelAnimationFrame(rafId2);
       window.removeEventListener('scroll', onScroll, true);
       window.removeEventListener('resize', onResize);
     };

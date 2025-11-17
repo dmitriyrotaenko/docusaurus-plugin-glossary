@@ -8,4 +8,3 @@ const { pathToFileURL } = require('url');
 globalThis.__importMeta__ = {
   url: pathToFileURL(__filename).href,
 };
-
