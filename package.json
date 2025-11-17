@@ -10,6 +10,11 @@
       "require": "./dist/index.js",
       "default": "./dist/index.js"
     },
+    "./preset": {
+      "import": "./dist/preset.js",
+      "require": "./dist/preset.js",
+      "default": "./dist/preset.js"
+    },
     "./remark/glossary-terms": {
       "import": "./dist/remark/glossary-terms.js",
       "require": "./dist/remark/glossary-terms.js",

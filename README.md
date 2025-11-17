@@ -28,58 +28,36 @@ A comprehensive Docusaurus plugin that provides glossary functionality with an a
    npm install docusaurus-plugin-glossary
    ```
 
-2. **Add to your `docusaurus.config.js`:**
+2. **Use the preset in your `docusaurus.config.js`:**
 
    ```javascript
-   const glossaryPlugin = require('docusaurus-plugin-glossary');
-
    module.exports = {
-     // ... other config
      presets: [
        [
-         '@docusaurus/preset-classic',
+         'docusaurus-plugin-glossary/preset',
          {
+           // Glossary configuration
+           glossary: {
+             glossaryPath: 'glossary/glossary.json',
+             routePath: '/glossary',
+           },
+           // Standard Docusaurus preset-classic options
            docs: {
-             // Add the remark plugin to enable auto-linking in docs
-             remarkPlugins: [
-               glossaryPlugin.getRemarkPlugin(
-                 {
-                   glossaryPath: 'glossary/glossary.json',
-                   routePath: '/glossary',
-                 },
-                 { siteDir: __dirname }
-               ),
-             ],
+             sidebarPath: './sidebars.js',
            },
-           pages: {
-             // Add the remark plugin to enable auto-linking in pages
-             remarkPlugins: [
-               glossaryPlugin.getRemarkPlugin(
-                 {
-                   glossaryPath: 'glossary/glossary.json',
-                   routePath: '/glossary',
-                 },
-                 { siteDir: __dirname }
-               ),
-             ],
+           blog: {
+             showReadingTime: true,
+           },
+           theme: {
+             customCss: './src/css/custom.css',
            },
          },
        ],
      ],
-     plugins: [
-       [
-         'docusaurus-plugin-glossary',
-         {
-           glossaryPath: 'glossary/glossary.json', // Path to your glossary file
-           routePath: '/glossary', // URL path for glossary page
-         },
-       ],
-     ],
-     // ... other config
    };
    ```
 
-   **Note:** You need to configure the remark plugin in both the plugin AND the preset (for docs/pages) to enable auto-linking of terms.
+   **That's it!** The preset automatically configures the glossary plugin and remark plugin for you.
 
 3. **Create your glossary file at `glossary/glossary.json`:**
 
@@ -161,7 +139,41 @@ Create a JSON file at `glossary/glossary.json` (or your configured path) in your
 
 ### Step 2: Configure the Plugin
 
-Add the plugin to your `docusaurus.config.js`:
+#### Option A: Using the Preset (Recommended)
+
+The easiest way to configure the plugin is using the preset:
+
+```javascript
+module.exports = {
+  presets: [
+    [
+      'docusaurus-plugin-glossary/preset',
+      {
+        glossary: {
+          glossaryPath: 'glossary/glossary.json',
+          routePath: '/glossary',
+        },
+        // All standard preset-classic options work here
+        docs: {
+          sidebarPath: './sidebars.js',
+        },
+        blog: {
+          showReadingTime: true,
+        },
+        theme: {
+          customCss: './src/css/custom.css',
+        },
+      },
+    ],
+  ],
+};
+```
+
+The preset automatically configures both the glossary plugin and the remark plugin for automatic term detection.
+
+#### Option B: Manual Configuration (Advanced)
+
+If you need more control or want to use the plugin alongside the classic preset separately:
 
 ```javascript
 const glossaryPlugin = require('docusaurus-plugin-glossary');
@@ -202,15 +214,13 @@ module.exports = {
     [
       'docusaurus-plugin-glossary',
       {
-        glossaryPath: 'glossary/glossary.json', // Path to your glossary file
-        routePath: '/glossary', // URL path for the glossary page
+        glossaryPath: 'glossary/glossary.json',
+        routePath: '/glossary',
       },
     ],
   ],
 };
 ```
-
-**Required Configuration:** To enable automatic term detection and linking, you must configure the remark plugin in your preset (as shown above). The plugin provides a `getRemarkPlugin` helper to make this easier.
 
 **Alternative: Using remarkPlugin directly**
 

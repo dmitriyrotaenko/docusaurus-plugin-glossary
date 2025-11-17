@@ -1,6 +1,5 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
-import glossaryPlugin from '../../dist/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,32 +22,20 @@ export default {
 
   presets: [
     [
-      '@docusaurus/preset-classic',
-      /** @type {import('@docusaurus/preset-classic').Options} */ ({
+      // Use the glossary preset which automatically configures everything
+      path.resolve(__dirname, '../../dist/preset.js'),
+      /** @type {import('docusaurus-plugin-glossary/preset').GlossaryPresetOptions} */ ({
+        // Glossary configuration
+        glossary: {
+          glossaryPath: 'glossary/glossary.json',
+          routePath: '/glossary',
+        },
+        // Classic preset configuration
         docs: {
           sidebarPath: path.resolve(__dirname, './sidebars.js'),
-          remarkPlugins: [
-            glossaryPlugin.getRemarkPlugin(
-              {
-                glossaryPath: 'glossary/glossary.json',
-                routePath: '/glossary',
-              },
-              { siteDir: __dirname }
-            ),
-          ],
         },
         blog: false,
-        pages: {
-          remarkPlugins: [
-            glossaryPlugin.getRemarkPlugin(
-              {
-                glossaryPath: 'glossary/glossary.json',
-                routePath: '/glossary',
-              },
-              { siteDir: __dirname }
-            ),
-          ],
-        },
+        pages: {},
         theme: {
           customCss: path.resolve(__dirname, './src/css/custom.css'),
         },
@@ -57,14 +44,6 @@ export default {
   ],
 
   plugins: [
-    [
-      // Use the local plugin from the repo root
-      path.resolve(__dirname, '../../lib'),
-      {
-        glossaryPath: 'glossary/glossary.json',
-        routePath: '/glossary',
-      },
-    ],
     // Plugin to configure webpack to ignore Node.js modules
     function () {
       return {
@@ -90,8 +69,6 @@ export default {
       };
     },
   ],
-
-  // remarkPlugins configured via preset (docs/pages)
 
   themeConfig: {
     navbar: {
