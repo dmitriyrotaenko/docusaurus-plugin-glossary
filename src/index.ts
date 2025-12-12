@@ -99,13 +99,7 @@ export default function glossaryPlugin(
   context: LoadContext,
   options: GlossaryPluginOptions = {}
 ): Plugin {
-  const {
-    glossaryPath = 'glossary/glossary.json',
-    routePath = '/glossary',
-    autoLinkTerms = true,
-  } = options;
-
-  let glossaryDataCache: GlossaryData = { terms: [] };
+  const { glossaryPath = 'glossary/glossary.json', routePath = '/glossary' } = options;
 
   return {
     name: 'docusaurus-plugin-glossary',
@@ -135,7 +129,6 @@ export default function glossaryPlugin(
             console.warn('[glossary-plugin] Proceeding with valid terms only.');
           }
 
-          glossaryDataCache = validationResult.data;
           return validationResult.data;
         } catch (error) {
           if (error instanceof GlossaryValidationError) {
@@ -149,7 +142,6 @@ export default function glossaryPlugin(
       }
 
       console.warn(`Glossary file not found at ${glossaryFilePath}. Using empty glossary.`);
-      glossaryDataCache = { terms: [] };
       return { terms: [] };
     },
 
@@ -164,7 +156,7 @@ export default function glossaryPlugin(
       );
 
       // Create a data file for the remark plugin to access glossary terms
-      const remarkGlossaryDataPath = await createData(
+      await createData(
         'remark-glossary-data.json',
         JSON.stringify({
           terms: glossaryContent.terms || [],
@@ -197,7 +189,7 @@ export default function glossaryPlugin(
       return [path.resolve(context.siteDir, glossaryPath)];
     },
 
-    async postBuild({ outDir }) {
+    async postBuild() {
       // You can add any post-build steps here if needed
       console.log('Glossary plugin: Build completed');
     },

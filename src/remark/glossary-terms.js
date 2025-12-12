@@ -10,7 +10,7 @@ import fs from 'fs';
  * @param {string} filePath - Path to the file (for error messages)
  * @returns {{ terms: Array<{term: string, definition: string}>, errors: string[] }}
  */
-function validateGlossaryTerms(data, filePath) {
+function validateGlossaryTerms(data, _filePath) {
   const errors = [];
   const validTerms = [];
 
@@ -188,7 +188,7 @@ export default function remarkGlossaryTerms({
    * Recursively replace glossary terms in text
    * Returns an array of text nodes and MDX components
    */
-  function replaceTermsInText(text, position) {
+  function replaceTermsInText(text) {
     if (!text || !sortedTerms.length) {
       return [{ type: 'text', value: text }];
     }

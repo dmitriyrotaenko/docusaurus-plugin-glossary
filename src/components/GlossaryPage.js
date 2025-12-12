@@ -29,10 +29,10 @@ function groupTermsByLetter(terms) {
  * GlossaryPage component - displays all glossary terms
  */
 export default function GlossaryPage({ glossaryData }) {
-  const { siteConfig } = useDocusaurusContext();
+  useDocusaurusContext();
   const [searchTerm, setSearchTerm] = useState('');
 
-  const terms = glossaryData?.terms || [];
+  const terms = useMemo(() => glossaryData?.terms || [], [glossaryData?.terms]);
 
   // Filter terms based on search
   const filteredTerms = useMemo(() => {
